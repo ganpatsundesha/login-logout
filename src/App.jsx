@@ -10,7 +10,6 @@ import {
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
-
     useEffect(() => {
         // Check local storage for user data on page load
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -69,7 +68,10 @@ const App = () => {
                         </li>
                         <li>
                             {loggedIn ? (
-                                <button onClick={handleLogout}>Logout</button>
+                                <>
+                                    <h5>Welcome, {user.username}</h5>
+                                    <button onClick={handleLogout}>Logout</button>
+                                </>
                             ) : (
                                 <Link to="/login">Login</Link>
                             )}
