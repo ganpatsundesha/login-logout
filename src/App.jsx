@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Route,
@@ -11,22 +11,28 @@ const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
 
+    useEffect(() => {
+        // Check local storage for user data on page load
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setLoggedIn(true);
+            setUser(storedUser);
+        }
+    }, []); // Empty dependency array to run only on mount
+
     const handleRegister = (username, password) => {
-        // Retrieve existing users from local storage or initialize an empty array
         const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
 
-        // Check if the username is already taken
         if (existingUsers.some((user) => user.username === username)) {
             alert('Username is already taken. Please choose a different one.');
             return;
         }
 
-        // Append the new user to the array and store it in local storage
         const newUser = { username, password };
         const updatedUsers = [...existingUsers, newUser];
         localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-        // Set the current user and log them in
+        localStorage.setItem('user', JSON.stringify(newUser));
         setLoggedIn(true);
         setUser(newUser);
     };
@@ -34,12 +40,12 @@ const App = () => {
     const handleLogin = (username, password) => {
         const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
 
-        // Check if the entered credentials match any user
         const loggedInUser = existingUsers.find(
             (user) => user.username === username && user.password === password
         );
 
         if (loggedInUser) {
+            localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoggedIn(true);
             setUser(loggedInUser);
         } else {
@@ -48,7 +54,7 @@ const App = () => {
     };
 
     const handleLogout = () => {
-        // localStorage.removeItem('users');
+        localStorage.removeItem('user');
         setLoggedIn(false);
         setUser(null);
     };
