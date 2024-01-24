@@ -6,6 +6,9 @@ import {
     Link,
     Navigate,
 } from 'react-router-dom';
+import Home from './components/Home';
+import RegisterForm from './components/RegisterForm';
+import LoginForm from './components/LoginForm';
 
 const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -61,127 +64,39 @@ const App = () => {
     return (
         <Router>
             <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            {loggedIn ? (
-                                <>
-                                    <h5>Welcome, {user.username}</h5>
-                                    <button onClick={handleLogout}>Logout</button>
-                                </>
-                            ) : (
-                                <Link to="/login">Login</Link>
-                            )}
-                        </li>
-                        {!loggedIn && (
-                            <li>
-                                <Link to="/register">Register</Link>
-                            </li>
-                        )}
-                    </ul>
-                </nav>
+                {loggedIn ? (
+                    <>
+                        <Link to="/">Home</Link>
+                        <h5>Welcome, {user.username}</h5>
+                        <button onClick={handleLogout}>Logout</button>
+                    </>
+                ) : (
+                    <>
+                        <Link to="/login">Login</Link>
+                        <br />
+                    </>
+                )}
+                {!loggedIn && (
+                    <Link to="/register">Register</Link>
+                )}
 
                 <hr />
-
-                <Routes>
-                    <Route
-                        path="/"
-                        element={loggedIn ? <Home user={user} /> : <Navigate to="/login" />}
-                    />
-                    <Route
-                        path="/register"
-                        element={<RegisterForm onRegister={handleRegister} />}
-                    />
-                    <Route
-                        path="/login"
-                        element={<LoginForm onLogin={handleLogin} />}
-                    />
-                </Routes>
             </div>
+            <Routes>
+                <Route
+                    path="/"
+                    element={loggedIn ? <Home user={user} /> : <Navigate to="/login" />}
+                />
+                <Route
+                    path="/register"
+                    element={<RegisterForm onRegister={handleRegister} />}
+                />
+                <Route
+                    path="/login"
+                    element={<LoginForm onLogin={handleLogin} />}
+                />
+            </Routes>
         </Router>
-    );
-};
-
-const Home = ({ user }) => (
-    <div>
-        <h2>Welcome, {user.username}!</h2>
-    </div>
-);
-
-const RegisterForm = ({ onRegister }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onRegister(username, password);
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>Register</h2>
-            <label>
-                Username:
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-            </label>
-            <br />
-            <label>
-                Password:
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </label>
-            <br />
-            <button type="submit">Register</button>
-        </form>
-    );
-};
-
-const LoginForm = ({ onLogin }) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onLogin(username, password);
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <h2>Login</h2>
-            <label>
-                Username:
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-            </label>
-            <br />
-            <label>
-                Password:
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </label>
-            <br />
-            <button type="submit">Login</button>
-        </form>
     );
 };
 
